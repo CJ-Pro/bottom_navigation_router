@@ -19,15 +19,14 @@ class BottomNavigationBarRouter extends StatefulWidget {
       _BottomNavigationBarRouterState();
 }
 
-class _BottomNavigationBarRouterState extends State<BottomNavigationBarRouter>
-    with AutomaticKeepAliveClientMixin {
+class _BottomNavigationBarRouterState extends State<BottomNavigationBarRouter> {
   late int _currentIndex = widget.bottomNavigationBar.currentIndex;
   final Queue<int> _stack = Queue();
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final _bottomNavigationBar = widget.bottomNavigationBar;
-    final _navigator = widget.navigators[_currentIndex];
+    final _navigators = widget.navigators;
+    final _navigator = _navigators[_currentIndex];
     final _navigatorKey = _navigator.navigatorKey;
     return Scaffold(
       body: WillPopScope(
@@ -39,7 +38,10 @@ class _BottomNavigationBarRouterState extends State<BottomNavigationBarRouter>
           }
           return Future.value(false);
         },
-        child: _navigator,
+        child: IndexedStack(
+          children: _navigators,
+          index: _currentIndex,
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: _bottomNavigationBar.items,
@@ -77,7 +79,4 @@ class _BottomNavigationBarRouterState extends State<BottomNavigationBarRouter>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
